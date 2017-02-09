@@ -26,8 +26,8 @@ fi
 
 if [ "$LIBC" = 'musl' ]; then
 	einfo 'Downloading alpine-chroot-install'
-	wgets 'https://raw.githubusercontent.com/jirutka/alpine-chroot-install/v0.1.1/alpine-chroot-install' \
-		'53b3d58c6c8dfb9e5a08f462ae762a9d09efbec33b5ac85bb7280d688c29928b'
+	wgets 'https://raw.githubusercontent.com/jirutka/alpine-chroot-install/v0.1.3/alpine-chroot-install' \
+		'c43c1bd2e39077733b83b6956c2dae9b26cb859829db8debdaaf15be5437f2b3'
 
 	sh alpine-chroot-install \
 		-a "$ARCH" -b v3.5 -k 'ARCH LIBC' -d "$CHROOT_DIR" \
