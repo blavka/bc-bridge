@@ -26,7 +26,7 @@ fi
 
 if [ "$LIBC" = 'musl' ]; then
 	einfo 'Downloading alpine-chroot-install'
-	wgets 'https://raw.githubusercontent.com/jirutka/alpine-chroot-install/v0.1.3/alpine-chroot-install' \
+	wgets 'https://raw.githubusercontent.com/alpinelinux/alpine-chroot-install/v0.1.3/alpine-chroot-install' \
 		'c43c1bd2e39077733b83b6956c2dae9b26cb859829db8debdaaf15be5437f2b3'
 
 	sh alpine-chroot-install \
