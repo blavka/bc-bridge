@@ -4,3 +4,6 @@
 [submodule "paho.mqtt.c"]
 	path = paho.mqtt.c
 	url = https://github.com/eclipse/paho.mqtt.c.git
+[submodule "sdk"]
+	path = sdk
+	url = https://github.com/bigclownlabs/bc-core-module-sdk.git
