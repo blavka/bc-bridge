@@ -2,34 +2,36 @@
 #include "bc_log.h"
 #include <time.h>
 
-static struct timespec bc_tick_ts_start;
+static struct timespec _bc_tick_ts_start;
+static bool _bc_tick_init = false;
 
-static void bc_tick_diff(struct timespec *start, struct timespec *end, struct timespec *diff);
-
-void bc_tick_init(void)
-{
-    if (clock_gettime(CLOCK_MONOTONIC, &bc_tick_ts_start) != 0)
-    {
-        bc_log_fatal("bc_tick_init: call failed: clock_gettime");
-    }
-}
+static void _bc_tick_diff(struct timespec *start, struct timespec *end, struct timespec *diff);
 
 bc_tick_t bc_tick_get(void)
 {
     struct timespec ts_now;
     struct timespec ts_diff;
 
+    if (!_bc_tick_init)
+    {
+        if (clock_gettime(CLOCK_MONOTONIC, &_bc_tick_ts_start) != 0)
+        {
+            bc_log_fatal("bc_tick_init: call failed: clock_gettime");
+        }
+        _bc_tick_init = true;
+    }
+
     if (clock_gettime(CLOCK_MONOTONIC, &ts_now) != 0)
     {
         bc_log_fatal("bc_tick_get: call failed: clock_gettime");
     }
 
-    bc_tick_diff(&bc_tick_ts_start, &ts_now, &ts_diff);
+    _bc_tick_diff(&_bc_tick_ts_start, &ts_now, &ts_diff);
 
     return (bc_tick_t) (ts_diff.tv_sec * 1000L + ts_diff.tv_nsec / 1000000L);
 }
 
-static void bc_tick_diff(struct timespec *start, struct timespec *end, struct timespec *diff)
+static void _bc_tick_diff(struct timespec *start, struct timespec *end, struct timespec *diff)
 {
     if ((end->tv_nsec - start->tv_nsec) < 0)
     {

@@ -3,6 +3,8 @@
 #include <sys/time.h>
 #include <sys/syscall.h>
 #include <time.h>
+#include <unistd.h>
+
 
 #define BC_LOG_DUMP_WIDTH 8
 

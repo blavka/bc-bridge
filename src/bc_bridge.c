@@ -6,6 +6,8 @@
 #include <sys/file.h>
 #include <fcntl.h>
 #include <libudev.h>
+#include <errno.h>
+#include <unistd.h>
 
 #define BC_BRIDGE_DEBUG 1
 
@@ -164,7 +166,7 @@ bool bc_bridge_open(bc_bridge_t *self, bc_bridge_device_info_t *info)
         return false;
     }
 
-    if (!_bc_bridge_ft260_i2c_set_clock_speed(self, BC_BRIDGE_I2C_CLOCK_SPEED_100KHZ))
+    if (!_bc_bridge_ft260_i2c_set_clock_speed(self, BC_BRIDGE_I2C_CLOCK_SPEED_400KHZ))
     {
         bc_log_error("bc_bridge_open: call failed: _bc_bridge_ft260_i2c_set_clock_speed");
 

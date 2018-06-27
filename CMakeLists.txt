@@ -13,6 +13,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake/)
 
 string(TIMESTAMP FIRMWARE_DATETIME "%Y-%m-%dT%H:%M:%SZ")
 
+add_definitions(-DBRIDGE=1)
 add_definitions(-DFIRMWARE_RELEASE="${PROJECT_VERSION}")
 add_definitions(-DFIRMWARE_DATETIME="${FIRMWARE_DATETIME}")
 add_definitions(-DBRIDGE)
@@ -35,45 +36,35 @@ find_package(argp REQUIRED)
 find_package(Threads REQUIRED)
 find_package(Libudev REQUIRED)
 
+
+include_directories(app)
 include_directories(jsmn)
+include_directories(sdk/bcl/inc)
 include_directories(src)
 
 ADD_SUBDIRECTORY(paho.mqtt.c)
 include_directories(paho.mqtt.c/src)
 
 set(SOURCE_FILES
-        jsmn/jsmn.c
-        src/application.c
-        src/bc_bridge.c
-        src/bc_i2c.c
-        src/bc_i2c_pca9535.c
-        src/bc_i2c_sc16is740.c
-        src/bc_i2c_tca9534a.c
-        src/bc_i2c_ssd1306.c
-        src/bc_log.c
-        src/bc_module_co2.c
-        src/bc_module_relay.c
-        src/bc_os.c
-        src/bc_tag_barometer.c
-        src/bc_tag_humidity.c
-        src/bc_tag_lux_meter.c
-        src/bc_tag_temperature.c
-        src/bc_base64.c
-        src/bc_talk.c
-        src/bc_tick.c
-        src/bc_gfx.c
-        src/task.c
-        src/task_co2.c
-        src/task_humidity.c
-        src/task_led.c
-        src/task_lux_meter.c
-        src/task_relay.c
-        src/task_thermometer.c
-        src/task_barometer.c
-        src/task_i2c.c
-        src/task_manager.c
-        src/task_display_oled.c
-        )
+    jsmn/jsmn.c
+    src/bc_os.c
+    src/bc_tick.c
+    src/bc_log.c
+    src/bc_bridge.c
+    src/bc_i2c.c
+    src/bc_module_core.c
+    sdk/bcl/src/bc_scheduler.c
+    sdk/bcl/src/bc_mpl3115a2.c
+    sdk/bcl/src/bc_tag_barometer.c
+    sdk/bcl/src/bc_tmp112.c
+    sdk/bcl/src/bc_tag_temperature.c
+    sdk/bcl/src/bc_hts221.c
+    sdk/bcl/src/bc_hdc2080.c
+    sdk/bcl/src/bc_tag_humidity.c
+    sdk/bcl/src/bc_opt3001.c
+    sdk/bcl/src/bc_tag_lux_meter.c
+    app/application.c
+    )
 
     add_executable(${PROJECT_NAME} ${SOURCE_FILES} src/main.c)
 
@@ -94,16 +85,16 @@ set(SOURCE_FILES
         COMMAND ${CMAKE_OBJCOPY} --strip-${strip_scope} $<TARGET_FILE:${PROJECT_NAME}>
         COMMAND ${CMAKE_OBJCOPY} --add-gnu-debuglink=$<TARGET_FILE_NAME:${PROJECT_NAME}>.debug $<TARGET_FILE:${PROJECT_NAME}>)
 
-    set(debug_file ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.debug)
+        set(debug_file ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.debug)
 
-    install(FILES ${debug_file} DESTINATION bin COMPONENT debug)
+        install(FILES ${debug_file} DESTINATION bin COMPONENT debug)
 
-    # To keep this file compatible with old CMake...
-    if(NOT CMAKE_VERSION VERSION_LESS 3.5)
-        # This is used only for DEB package, see cmake/CPackProjectConfig.cmake.
-        install(FILES ${debug_file} DESTINATION lib/debug/usr/bin COMPONENT dbg EXCLUDE_FROM_ALL)
+        # To keep this file compatible with old CMake...
+        if(NOT CMAKE_VERSION VERSION_LESS 3.5)
+            # This is used only for DEB package, see cmake/CPackProjectConfig.cmake.
+            install(FILES ${debug_file} DESTINATION lib/debug/usr/bin COMPONENT dbg EXCLUDE_FROM_ALL)
+        endif()
     endif()
-endif()
 
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin COMPONENT main)
 
